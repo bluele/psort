@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	size = 2000
+	size = 20000
 	k    = 100
 )
 
@@ -23,13 +23,23 @@ func makeData(size int) []int {
 	return vs
 }
 
-func checkSort(data []int, k int) {
+func checkSort(data []int, k int) bool {
 	var prev int
 	for i, v := range data[:k] {
 		if i > 0 && v < prev {
-			panic(fmt.Sprintf("sort error: %v", data[:k]))
+			return false
 		}
 		prev = v
+	}
+	return true
+}
+
+func TestPSort(t *testing.T) {
+	for i := 0; i < 100; i++ {
+		data := makeData(size)
+		if !checkSort(SortTopK(data, k), k) {
+			t.Fatal(fmt.Sprintf("unsort error: %v", data[:k]))
+		}
 	}
 }
 
@@ -42,9 +52,6 @@ func BenchmarkSort(b *testing.B) {
 		sort.Slice(data, func(i, j int) bool {
 			return data[i] < data[j]
 		})
-		b.StopTimer()
-		checkSort(data, k)
-		b.StartTimer()
 	}
 }
 
@@ -54,9 +61,6 @@ func BenchmarkPSort(b *testing.B) {
 		b.StopTimer()
 		data := makeData(size)
 		b.StartTimer()
-		ret := SortTopK(data, k)
-		b.StopTimer()
-		checkSort(ret, k)
-		b.StartTimer()
+		SortTopK(data, k)
 	}
 }

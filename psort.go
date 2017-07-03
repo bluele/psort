@@ -21,22 +21,16 @@ func SortTopK(data []int, k int) []int {
 	return data[:k]
 }
 
-func swap(data []int, p, q int) {
-	temp := data[p]
-	data[p] = data[q]
-	data[q] = temp
-}
-
 func partition(data []int, start, end int) int {
 	x := data[start]
 	i := start
 	for j := start + 1; j <= end; j++ {
 		if x > data[j] {
 			i++
-			swap(data, i, j)
+			data[i], data[j] = data[j], data[i]
 		}
 	}
-	swap(data, start, i)
+	data[start], data[i] = data[i], data[start]
 	return i
 }
 
