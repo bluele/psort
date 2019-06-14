@@ -12,6 +12,7 @@ import (
 var (
 	size = 20000
 	k    = 100
+	d    = 16
 )
 
 func makeData(size int) []int {
@@ -46,6 +47,20 @@ func TestPSort(t *testing.T) {
 	}
 }
 
+func TestPSortDifferentSizes(t *testing.T) {
+	for size := 0; size < 100; size++ {
+		for kk := 0; kk <= size; kk++ {
+			data := makeData(size)
+			Slice(data, func(i, j int) bool {
+				return data[i] < data[j]
+			}, kk)
+			if !checkSorted(data, kk) {
+				t.Fatal(fmt.Sprintf("unsort error: %v", data[:k]))
+			}
+		}
+	}
+}
+
 func BenchmarkSort(b *testing.B) {
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
@@ -66,6 +81,18 @@ func BenchmarkPSort(b *testing.B) {
 		b.StartTimer()
 		Slice(data, func(i, j int) bool {
 			return data[i] < data[j]
+		}, k)
+	}
+}
+
+func BenchmarkPSortLowDisc(b *testing.B) {
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		b.StopTimer()
+		data := makeData(size)
+		b.StartTimer()
+		Slice(data, func(i, j int) bool {
+			return data[i]%d < data[j]%d
 		}, k)
 	}
 }

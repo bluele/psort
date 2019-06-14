@@ -35,15 +35,27 @@ func Slice(slice interface{}, less compare, k int) {
 }
 
 func partition(rv *reflect.Value, swap swapFunc, less compare, start, end int) int {
-	i := start
-	for j := start + 1; j <= end; j++ {
-		if less(j, start) {
-			i++
-			swap(i, j)
+
+	left := start + 1
+	right := end
+
+	for left <= right {
+		for left <= end && less(left, start) {
+			left++
+		}
+		for right >= start && less(start, right) {
+			right--
+		}
+		if left <= right {
+			swap(left, right)
+			left++
+			right--
 		}
 	}
-	swap(i, start)
-	return i
+
+	swap(start, right)
+	return right
+
 }
 
 func quickSort(rv *reflect.Value, swap swapFunc, less compare, start, end int) {
