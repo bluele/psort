@@ -1,6 +1,7 @@
 package psort
 
 import (
+	"math/rand"
 	"reflect"
 )
 
@@ -35,9 +36,9 @@ func Slice(slice interface{}, less compare, k int) {
 }
 
 func partition(rv *reflect.Value, swap swapFunc, less compare, start, end int) int {
-
 	left := start + 1
 	right := end
+	swap(start, rand.Intn(end-start)+start)
 
 	for left <= right {
 		for left <= end && less(left, start) {
