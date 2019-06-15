@@ -24,6 +24,14 @@ func makeData(size int) []int {
 	return vs
 }
 
+func makeReverseSorted(size int) []int {
+	vs := make([]int, size)
+	for i := 0; i < size; i++ {
+		vs[i] = size - i
+	}
+	return vs
+}
+
 func checkSorted(data []int, k int) bool {
 	var prev int
 	for i, v := range data[:k] {
@@ -93,6 +101,18 @@ func BenchmarkPSortLowDisc(b *testing.B) {
 		b.StartTimer()
 		Slice(data, func(i, j int) bool {
 			return data[i]%d < data[j]%d
+		}, k)
+	}
+}
+
+func BenchmarkPSortReverseSorted(b *testing.B) {
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		b.StopTimer()
+		data := makeReverseSorted(size)
+		b.StartTimer()
+		Slice(data, func(i, j int) bool {
+			return data[i] < data[j]
 		}, k)
 	}
 }
